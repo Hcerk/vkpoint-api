@@ -85,9 +85,10 @@ class API {
    * @async
    * @param {String} method - VK Point API method
    * @param {Object} params - VK Point API parameters
+   * @default param {}
    */
 
-  async call (method, params) {
+  async call (method, params = {}) {
     if (!method) {
       throw new Error('method is undefined!')
     }
@@ -96,16 +97,15 @@ class API {
       throw new Error('params is undefined!')
     }
 
-    params = Object.assign({ access_token: this.token, user_id: this.userId }, params)
+    params = Object.assign({ access_token: this.token }, params)
 
-    await request(`https://vkpoint.vposter.ru/api/method/${method}`, params)
-      .then(result => {
-        if (result.error) {
-          throw new Error(result.error)
-        }
+    const result = await request(`https://vkpoint.vposter.ru/api/method/${method}.php?${Object.entries(params).map(e => e.join('=')).join('&')}`)
 
-        return result
-      })
+    if (result && result.error) {
+      throw new Error(result.error)
+    }
+
+    return result
   }
 
   /**
@@ -123,23 +123,70 @@ class API {
     }
 
     const params = {
-      user_id_to: toId,
+      user_id_to: this.userId,
+      user_id: toId,
       point: amount,
     }
 
-    await this.call('account.MerchantSend', params)
-      .then((result) => {
-        if (result.error) {
-          throw new Error(result.error)
-        }
+    const result = await this.call('account.MerchantSend', params)
 
-        return result
-      })
+    if (result && result.error) {
+      throw new Error(result.error)
+    }
+
+    return result
   }
 
   /**
-   * @param {Number} amount
-   * @param {Boolean} fixation
+   * @async
+   * @param {Number} targetId - target id
+   */
+  async getUserData (targetId) {
+    if (typeof targetId !== 'number') {
+      throw new Error('toId must be a number!')
+    }
+
+    const params = {
+      user_id: targetId,
+    }
+
+    const result = await this.call('account.getPoint', params)
+
+    if (result && result.error) {
+      throw new Error(result.error)
+    }
+
+    return result
+  }
+
+  /**
+   * @async
+   * @param {Number} count - amount of users
+   * @param {Boolean} vip - is top vip?
+   * @default count 50
+   * @default vip false
+   */
+  async getUsersTop (count = 50, vip = false) {
+    if (typeof targetId !== 'number') {
+      throw new Error('toId must be a number!')
+    }
+
+    const params = {
+      count: count,
+    }
+
+    let result = vip ? await this.call('users.getTopVip', params) : await this.call('users.getTop', params)
+
+    if (result && result.error) {
+      throw new Error(result.error)
+    }
+
+    return result
+  }
+
+  /**
+   * @param {Number} amount - VK Points
+   * @param {Boolean} fixation - is amount fixed
    */
 
   generateLink (amount = 0, fixation = false) {
