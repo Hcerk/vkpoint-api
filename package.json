@@ -1,6 +1,6 @@
 {
   "name": "vkpoint-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "VK Point API",
   "main": "index.js",
   "scripts": {

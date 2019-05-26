@@ -81,6 +81,38 @@ class API {
     this.userId = userId
   }
 
+  /**
+   * @async
+   * @param {String} method - VK Point API method
+   * @param {Object} params - VK Point API parameters
+   */
+
+  async call (method, params) {
+    if (!method) {
+      throw new Error('method is undefined!')
+    }
+
+    if (!params) {
+      throw new Error('params is undefined!')
+    }
+
+    params = Object.assign({ access_token: this.token, user_id: this.userId }, params)
+
+    await request(`https://vkpoint.vposter.ru/api/method/${method}`, params)
+      .then(result => {
+        if (result.error) {
+          throw new Error(result.error)
+        }
+
+        return result
+      })
+  }
+
+  /**
+   * @async
+   * @param {Number} toId - target id
+   * @param {Number} amount - amount of VK Points
+   */
   async sendPayment (toId, amount) {
     if (typeof toId !== 'number') {
       throw new Error('toId must be a number!')
@@ -90,14 +122,12 @@ class API {
       throw new Error('amount must be a number!')
     }
 
-    const body = {
+    const params = {
       user_id_to: toId,
       point: amount,
-      user_id: this.userId,
-      access_token: this.token,
     }
 
-    await request('https://vkpoint.vposter.ru/api/method/account.MerchantSend', body)
+    await this.call('account.MerchantSend', params)
       .then((result) => {
         if (result.error) {
           throw new Error(result.error)
@@ -105,6 +135,19 @@ class API {
 
         return result
       })
+  }
+
+  /**
+   * @param {Number} amount
+   * @param {Boolean} fixation
+   */
+
+  generateLink (amount = 0, fixation = false) {
+    if (typeof amount !== 'number') {
+      throw new Error('amount isn\'t number!')
+    }
+
+    return `vk.com/app6748650#u=${this.userId}${amount > 0 ? `&point=${amount}` : ''}${fixation ? '&fixed=true' : ''}`
   }
 }
 
