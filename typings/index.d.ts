@@ -13,12 +13,12 @@ declare class Updates {
    * Callback API options
    * @param options Start webhook params
    */
-  start(options: Params.IUpdatesStartParams): Promise<void>;
+  public start(options: Params.IUpdatesStartParams): Promise<void>;
 
   /**
    * @param callback Callback
    */
-  onTransfer(callback: Function): void;
+  public onTransfer(callback: Function): void;
 }
 
 declare class API {
@@ -33,47 +33,46 @@ declare class API {
    * @param method VK Point API метод
    * @param params VK Point API параметры
    */
-  call(method: string, params?: object): Promise<any>;
+  public call(method: string, params?: object): Promise<any>;
 
   /**
    * @param toId ID получателя
    * @param amount Количество VK Points
    */
-  sendPayment(toId: number, amount: number): Promise<Responses.ISendPaymentResponse>;
+  public sendPayment(toId: number, amount: number): Promise<Responses.ISendPaymentResponse>;
 
   /**
    * @param targetId ID того, о ком надо получить данные
    */
-  getUserData(targetId: number): Promise<Responses.IGetUserDataResponse>;
+  public getUserData(targetId: number): Promise<Responses.IGetUserDataResponse>;
 
   /**
    * @param count Количество пользователей для вывода
    * @param vip Является ли топ VIP?
    */
-  getUsersTop(count?: number, vip?: boolean): Promise<Responses.IGetTopResponse | Responses.IGetVipTopResponse>;
+  public getUsersTop(count?: number, vip?: boolean): Promise<Responses.IGetTopResponse | Responses.IGetVipTopResponse>;
 
   /**
    * @param targetId ID пользователя для получения транзакций
    */
-  getTransactionHistory(targetId?: number): Promise<Responses.IGetTransactionHistoryResponse>;
+  public getTransactionHistory(targetId?: number): Promise<Responses.IGetTransactionHistoryResponse>;
 
   /**
    * @param amount - Количество VK Point
    * @param fixation - Является ли сумма VK Points фиксированной?
    */
-  generateLink(amount?: number, fixation?: boolean): string;
+  public generateLink(amount?: number, fixation?: boolean): string;
 }
 
 declare class VKPoint {
+  public updates: Updates;
+
+  public api: API;
   /**
    * Constructor
    * @param options VK Point params
    */
   constructor(options: Params.IVKPointParams);
-
-  updates: Updates;
-
-  api: API;
 }
 
 export default VKPoint;

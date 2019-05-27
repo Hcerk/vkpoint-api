@@ -4,6 +4,7 @@
   <p align="center">
     <a href="https://www.npmjs.com/package/vkpoint-api"><img src="https://img.shields.io/npm/dt/vkpoint-api.svg?style=flat-square" alt="NPM downloads"></a>
     <a href="https://www.npmjs.com/package/vkpoint-api"><img src="https://img.shields.io/npm/v/vkpoint-api.svg?style=flat-square" alt="NPM version"></a>
+    <a href="https://www.codacy.com/app/aeonixlegit/vkpoint-api"><img src="https://img.shields.io/codacy/grade/9b167d8a72214d96bf2498030543f2db.svg?style=flat-square" alt="Code quality"></a>
     <br />
     Node.JS API для работы с приложением ВКонтакте <a href="https://vk.com/app_point">VK Point</a>
     <br />

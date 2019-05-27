@@ -33,7 +33,7 @@ class Updates {
 
     let result = await request(`https://vkpoint.vposter.ru/api/method/account.changeSettings.php?${Object.entries(params).map(e => e.join('=')).join('&')}`)
 
-    if (result) {
+    if (!result.error) {
       this.isStarted = true
 
       this.app.use((ctx) => {
@@ -44,7 +44,6 @@ class Updates {
     } else {
       this.isStarted = false
     }
-
   }
 
   onTransfer (callback) {
@@ -130,7 +129,7 @@ class API {
       count: count,
     }
 
-    let method = vip ? 'getTopVip' : 'getTop';
+    let method = vip ? 'getTopVip' : 'getTop'
     let result = await this.call(`users.${method}`, params)
 
     if (result.error) {
@@ -146,7 +145,7 @@ class API {
     }
 
     const params = {
-      user_id : targetId,
+      user_id: targetId
     }
 
     let result = await this.call(`users.HistoryTransactions`, params)
