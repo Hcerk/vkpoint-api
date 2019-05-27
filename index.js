@@ -145,7 +145,7 @@ class API {
     }
 
     const params = {
-      user_id: targetId
+      user_id: targetId,
     }
 
     let result = await this.call(`users.HistoryTransactions`, params)

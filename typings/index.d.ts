@@ -68,6 +68,7 @@ declare class VKPoint {
   public updates: Updates;
 
   public api: API;
+
   /**
    * Constructor
    * @param options VK Point params
@@ -77,4 +78,4 @@ declare class VKPoint {
 
 export default VKPoint;
 
-export = VKPoint;
+export { VKPoint };

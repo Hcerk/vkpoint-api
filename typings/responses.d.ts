@@ -154,6 +154,6 @@ export interface IGetTransactionHistoryResponse {
   response: {
     count_day: number;
 
-    items: Array<IGetTransactionHistoryUserResponse>
+    items: Array<IGetTransactionHistoryUserResponse>;
   };
 }
