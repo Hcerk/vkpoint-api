@@ -44,5 +44,6 @@
   "bugs": {
     "url": "https://github.com/aeonixlegit/vkpoint-api/issues"
   },
-  "homepage": "https://github.com/aeonixlegit/vkpoint-api#readme"
+  "homepage": "https://github.com/aeonixlegit/vkpoint-api#readme",
+  "typings": "./typings"
 }
