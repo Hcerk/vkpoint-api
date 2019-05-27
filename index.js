@@ -25,24 +25,26 @@ class Updates {
       url = `http://${url}`
     }
 
-    let result = await request('https://vkpoint.vposter.ru/api/method/account.changeSettings',
-      {
-        user_id: this.userId,
-        callback: `${url}:${port}${path}`,
-        access_token: this.token,
-      }).then(result => {
-      if (result) {
-        this.isStarted = true
+    let params = {
+      user_id: this.userId,
+      callback: `${url}:${port}${path}`,
+      access_token: this.token,
+    }
 
-        this.app.use((ctx) => {
-          ctx.status = 200
+    let result = await request(`https://vkpoint.vposter.ru/api/method/account.changeSettings.php?${Object.entries(params).map(e => e.join('=')).join('&')}`)
 
-          this.transferHandler(ctx.request.body)
-        })
-      } else {
-        this.isStarted = false
-      }
-    })
+    if (result) {
+      this.isStarted = true
+
+      this.app.use((ctx) => {
+        ctx.status = 200
+
+        this.transferCallback(ctx.request.body)
+      })
+    } else {
+      this.isStarted = false
+    }
+
   }
 
   onTransfer (callback) {
@@ -138,10 +140,23 @@ class API {
     return result
   }
 
-  /**
-   * @param {Number} amount - VK Points
-   * @param {Boolean} fixation - is amount fixed
-   */
+  async getTransactionHistory (targetId = this.userId) {
+    if (typeof targetId !== 'number') {
+      throw new Error(`expected \`targetId\` to be number, got ${typeof targetId}`)
+    }
+
+    const params = {
+      user_id : targetId,
+    }
+
+    let result = await this.call(`users.HistoryTransactions`, params)
+
+    if (result.error) {
+      throw new Error(result.error)
+    }
+
+    return result
+  }
 
   generateLink (amount = 0, fixation = false) {
     if (typeof amount !== 'number') {

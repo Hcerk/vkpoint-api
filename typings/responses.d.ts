@@ -36,6 +36,30 @@ interface IGetVipTopUserResponse {
   verified: string;
 }
 
+interface IGetTransactionHistoryUserResponse {
+  id: string;
+
+  first_name: string;
+
+  last_name: string;
+
+  photo: string;
+
+  datetime: number;
+
+  info: {
+    type: string;
+
+    type_store: string;
+
+    point: number;
+
+    user_id: string;
+
+    datetime: number;
+  }
+}
+
 export interface IGetTopResponse {
   response: {
     count_point: number;
@@ -123,5 +147,13 @@ export interface ISendPaymentResponse {
     amount: number;
 
     user_id_to: string;
+  };
+}
+
+export interface IGetTransactionHistoryResponse {
+  response: {
+    count_day: number;
+
+    items: Array<IGetTransactionHistoryUserResponse>
   };
 }

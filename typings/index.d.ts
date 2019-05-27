@@ -30,28 +30,37 @@ declare class API {
   constructor(token: string, userId: number);
 
   /**
-   * @param method VK Point API method
-   * @param params VK Point API parameters
+   * @param method VK Point API метод
+   * @param params VK Point API параметры
    */
   call(method: string, params?: object): Promise<any>;
 
   /**
-   * @param toId Target's ID
-   * @param amount Amount of VK Points
+   * @param toId ID получателя
+   * @param amount Количество VK Points
    */
   sendPayment(toId: number, amount: number): Promise<Responses.ISendPaymentResponse>;
 
   /**
-   * @param targetId Target's ID
+   * @param targetId ID того, о ком надо получить данные
    */
   getUserData(targetId: number): Promise<Responses.IGetUserDataResponse>;
 
   /**
-   * @param count Amount of users
-   * @param vip Is top vip?
+   * @param count Количество пользователей для вывода
+   * @param vip Является ли топ VIP?
    */
   getUsersTop(count?: number, vip?: boolean): Promise<Responses.IGetTopResponse | Responses.IGetVipTopResponse>;
 
+  /**
+   * @param targetId ID пользователя для получения транзакций
+   */
+  getTransactionHistory(targetId?: number): Promise<Responses.IGetTransactionHistoryResponse>;
+
+  /**
+   * @param amount - Количество VK Point
+   * @param fixation - Является ли сумма VK Points фиксированной?
+   */
   generateLink(amount?: number, fixation?: boolean): string;
 }
 

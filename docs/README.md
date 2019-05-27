@@ -108,6 +108,24 @@ run().catch(console.error)
 |count |Number |false         |Количество пользователей (по умолчанию 50)                      |
 |vip   |Boolean|false         |Возвращает топ VIP пользователей, если true (по умолчанию false)|
 
+### Метод 'getTransactionHistory'
+
+`getTransactionHistory` - получение истории переводов пользователя.
+
+```js
+async function run () {
+  const result = await vkpoint.api.getTransactionHistory(1) // Получаем историю переводо пользователя с @id1 (Павел Дуров)
+
+  console.log(result)
+}
+
+run().catch(console.error)
+```
+
+|Опция   |Тип   |Необходимость |Описание                                                              |
+|-       |-     |-             |-                                                                     |
+|targetId|Number|false         |ID пользователя для получения истории переводов (по умолчанию ID бота)|
+
 ### Метод 'generateLink'
 
 `generateLink` - генерация ссылки на перевод.
