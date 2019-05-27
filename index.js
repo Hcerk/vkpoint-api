@@ -3,10 +3,6 @@ const koaBody = require('koa-body')
 const request = require('./utils/request')
 
 class Updates {
-  /**
-   * @param {String} token - VK Point Token
-   * @param {Number} userId - VK User ID
-   */
   constructor (token, userId) {
     this.token = token
     this.userId = userId
@@ -16,25 +12,9 @@ class Updates {
     this.transferCallback = null
   }
 
-  /**
-   *
-   * @param {Object} options - Callback API options
-   * @param {String} options.url - Callback API URL (Ex: 255.255.255.255)
-   * @param {Number} options.port - Callback API Port (Ex: 3000)
-   * @param {String} options.path - Callback API Path (Ex: /)
-   * @default options.path '/'
-   */
-  async start (options) {
-    let { url, port, path } = options
-
+  async start ({ url, port = 8181, path = '/' }) {
     if (!url) {
-      return new Error('Specify an URL.')
-    }
-    if (!port) {
-      port = 8181
-    }
-    if (!path) {
-      path = '/'
+      return new Error('param `url` is required')
     }
 
     this.app = new Koa()
@@ -45,7 +25,7 @@ class Updates {
       url = `http://${url}`
     }
 
-    await request('https://vkpoint.vposter.ru/api/method/account.changeSettings',
+    let result = await request('https://vkpoint.vposter.ru/api/method/account.changeSettings',
       {
         user_id: this.userId,
         callback: `${url}:${port}${path}`,
@@ -81,45 +61,29 @@ class API {
     this.userId = userId
   }
 
-  /**
-   * @async
-   * @param {String} method - VK Point API method
-   * @param {Object} params - VK Point API parameters
-   * @default param {}
-   */
-
   async call (method, params = {}) {
     if (!method) {
-      throw new Error('method is undefined!')
-    }
-
-    if (!params) {
-      throw new Error('params is undefined!')
+      throw new Error('param `method` is required')
     }
 
     params = Object.assign({ access_token: this.token }, params)
 
     const result = await request(`https://vkpoint.vposter.ru/api/method/${method}.php?${Object.entries(params).map(e => e.join('=')).join('&')}`)
 
-    if (result && result.error) {
+    if (result.error) {
       throw new Error(result.error)
     }
 
     return result
   }
 
-  /**
-   * @async
-   * @param {Number} toId - target id
-   * @param {Number} amount - amount of VK Points
-   */
   async sendPayment (toId, amount) {
     if (typeof toId !== 'number') {
-      throw new Error('toId must be a number!')
+      throw new Error(`expected \`toId\` to be number, got ${typeof toId}`)
     }
 
     if (typeof amount !== 'number') {
-      throw new Error('amount must be a number!')
+      throw new Error(`expected \`amount\` to be number, got ${typeof amount}`)
     }
 
     const params = {
@@ -130,20 +94,16 @@ class API {
 
     const result = await this.call('account.MerchantSend', params)
 
-    if (result && result.error) {
+    if (result.error) {
       throw new Error(result.error)
     }
 
     return result
   }
 
-  /**
-   * @async
-   * @param {Number} targetId - target id
-   */
   async getUserData (targetId) {
     if (typeof targetId !== 'number') {
-      throw new Error('toId must be a number!')
+      throw new Error(`expected \`targetId\` to be number, got ${typeof targetId}`)
     }
 
     const params = {
@@ -152,32 +112,26 @@ class API {
 
     const result = await this.call('account.getPoint', params)
 
-    if (result && result.error) {
+    if (result.error) {
       throw new Error(result.error)
     }
 
     return result
   }
 
-  /**
-   * @async
-   * @param {Number} count - amount of users
-   * @param {Boolean} vip - is top vip?
-   * @default count 50
-   * @default vip false
-   */
   async getUsersTop (count = 50, vip = false) {
     if (typeof targetId !== 'number') {
-      throw new Error('toId must be a number!')
+      throw new Error(`expected \`targetId\` to be number, got ${typeof targetId}`)
     }
 
     const params = {
       count: count,
     }
 
-    let result = vip ? await this.call('users.getTopVip', params) : await this.call('users.getTop', params)
+    let method = vip ? 'getTopVip' : 'getTop';
+    let result = await this.call(`users.${method}`, params)
 
-    if (result && result.error) {
+    if (result.error) {
       throw new Error(result.error)
     }
 
@@ -191,7 +145,7 @@ class API {
 
   generateLink (amount = 0, fixation = false) {
     if (typeof amount !== 'number') {
-      throw new Error('amount isn\'t number!')
+      throw new Error(`expected \`amount\` to be number, got ${typeof amount}`)
     }
 
     return `vk.com/app6748650#u=${this.userId}${amount > 0 ? `&point=${amount}` : ''}${fixation ? '&fixed=true' : ''}`
@@ -199,15 +153,9 @@ class API {
 }
 
 module.exports = class VKPoint {
-  /**
-     * @param {Object} options - Options
-     * @param {String} options.token - VK Point API Key
-     * @param {Number} options.userId - VK User ID
-     */
-
   constructor (options) {
-    if (!options.token) throw new Error('VK Point Token is invalid!')
-    if (!options.userId) throw new Error('VK User ID is invalid!')
+    if (!options.token) throw new Error('param `token` is required')
+    if (!options.userId) throw new Error('param `userId` is required')
 
     this.token = options.token
     this.userId = options.userId

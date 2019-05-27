@@ -1,6 +1,6 @@
 {
   "name": "vkpoint-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "VK Point API",
   "main": "index.js",
   "scripts": {
@@ -44,5 +44,6 @@
   "bugs": {
     "url": "https://github.com/aeonixlegit/vkpoint-api/issues"
   },
-  "homepage": "https://github.com/aeonixlegit/vkpoint-api#readme"
+  "homepage": "https://github.com/aeonixlegit/vkpoint-api#readme",
+  "typings": "./typings"
 }
